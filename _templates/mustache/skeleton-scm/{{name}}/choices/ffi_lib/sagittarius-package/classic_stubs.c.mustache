@@ -1,0 +1,56 @@
+#include <sagittarius.h>
+#define LIBSAGITTARIUS_EXT_BODY
+#include <sagittarius/extend.h>
+#include "intro_c/classic.h"
+#include "{{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubs.h"
+
+SgObject Classic_fact_i(unsigned int n) {
+	unsigned long res_c = fact_i(n);
+	SgObject res = Sg_MakeInteger(res_c);
+	return res;
+}
+
+SgObject Classic_fact_lp(unsigned int n) {
+	unsigned long res_c = fact_lp(n);
+	SgObject res = Sg_MakeInteger(res_c);
+	return res;
+}
+
+SgObject Classic_expt_i(float b, float n) {
+	float res_c = expt_i(b, n);
+	SgObject res = Sg_MakeFlonum(res_c);
+	return res;
+}
+
+SgObject Classic_expt_lp(float b, float n){
+	float res_c = expt_lp(b, n);
+	SgObject res = Sg_MakeFlonum(res_c);
+	return res;
+}
+
+extern void Sg__Init_classic_stubslib(SgLibrary *lib);
+
+SG_EXTENSION_ENTRY void CDECL Sg_Init_classic_stubs(void) {
+  SgLibrary *lib;
+  /* Initialize the package DSO */
+  SG_INIT_EXTENSION(classic_stubs);
+  
+  lib = SG_LIBRARY(Sg_FindLibrary(SG_INTERN("({{parent}}{{^parent}}intro_scm{{/parent}}.classic)"), FALSE));
+  
+  /* Call stub initialiser, the stub library will be automatically created. */
+  Sg__Init_classic_stubslib(lib);
+  
+  /* Do your initialisation here. */
+}
+
+/*
+ * To create classic_stubslib.c:
+ *   cd build ; sagittarius-package genstub .. . {{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubslib.stub
+ * To compile/link dynamic lib:
+ *   CPPFLAGS := $(CPPFLAGS) `sagittarius-config -I`
+ *   LDFLAGS := $(LDFLAGS) `sagittarius-config -L` `pkg-config --libs bdw-gc`
+ *   CFLAGS := $(CFLAGS) `sagittarius-config --c-flags` `pkg-config --cflags bdw-gc`
+ *   LDLIBS := $(LDLIBS) `sagittarius-config -l` -lintro_c-practice
+ *   $(CC) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -shared classic_stubslib.c 
+ *     ../{{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubs.c -o {{parent}}{{^parent}}intro_scm{{/parent}}-classic_stubs.so $(LDLIBS)
+ */

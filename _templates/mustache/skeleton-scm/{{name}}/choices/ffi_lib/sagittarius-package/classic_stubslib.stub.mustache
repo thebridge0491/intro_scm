@@ -1,0 +1,15 @@
+;; -*- mode:scheme -*-
+(decl-code
+  (.include <sagittarius.h>)
+  (.define "LIBSAGITTARIUS_EXT_BODY")
+  (.include <sagittarius/extend.h>
+    "{{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubs.h"))
+	   
+
+(define-c-proc fact_i (n::<fixnum>) Classic_fact_i)
+
+(define-c-proc fact_lp (n::<fixnum>) Classic_fact_lp)
+
+(define-c-proc expt_i (b::<fixnum> n::<fixnum>) Classic_expt_i)
+
+(define-c-proc expt_lp (b::<fixnum> n::<fixnum>) Classic_expt_lp)

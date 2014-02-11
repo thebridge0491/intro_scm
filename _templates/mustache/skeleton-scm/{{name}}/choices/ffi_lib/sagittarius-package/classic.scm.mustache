@@ -1,0 +1,73 @@
+; Scheme - comments style convention
+; title       ;;;; Short title for block of code
+; intro       ;;;  Description before block of code
+; state       ;;   State of program or following code
+; explanation ;    Regarding line on which it appears
+
+; tag::apidocs[]
+;;; {{parentcap}}{{^parentcap}}Intro_scm{{/parentcap}}{{joiner}}{{^joiner}}.{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}} FFI Classic module
+(define-library ({{parent}}{{^parent}}intro_scm{{/parent}} classic)
+; end::apidocs[]
+	(export fact_i fact_lp expt_i expt_lp
+		)
+	
+	 (import (scheme base) (scheme process-context) (scheme write))
+	
+	(cond-expand
+		(gauche (import (only (gauche base) make string->regexp rxmatch) 
+			(gauche logger)))
+		(sagittarius (import (sagittarius regex) (util logging)
+			(sagittarius ffi)))
+		(else))
+	
+	(import (srfi 1) (srfi 8))
+	(cond-expand
+		((library (srfi 29)) (import (srfi 29)))
+		(gauche (import (only (gauche base) format)))
+		(sagittarius (import (only (sagittarius) format)))
+		(else))
+	
+	(begin
+		(define mod-sym '{{parent}}{{^parent}}intro_scm{{/parent}}.classic)
+		
+		;; Loads extension
+		(load-dynamic-library "{{parent}}{{^parent}}intro_scm{{/parent}}-classic_stubs") ; "Sg_Init_classic_stubs")
+		
+		#|
+		(define log_prac
+			(cond-expand
+				(gauche (make <log-drain> :path "prac.log" :prefix 
+					(format "~a ~a:" "(~Y ~T)" mod-sym)))
+				(sagittarius (make-logger +debug-level+ (make-file-appender 
+					(format "~a ~a:~a" "[~w5] ~l" mod-sym "~m") "prac.log")))
+				(else '()))
+			)
+		|#
+		
+		;(include "_classic.scm")
+		
+		; tag::apidocs[]
+		;;; Main function for library example(s)
+		(define (lib_main argv)
+		; end::apidocs[]
+			(display (format "~a~%" (fact_i 5)))
+			0)
+		
+		;; guard against main function execution within library
+		;(if (string=? "{{parent}}{{^parent}}intro_scm{{/parent}}/classic.scm" (car (command-line)))
+		(if
+			(cond-expand
+				(gauche
+					(rxmatch (string->regexp "{{parent}}{{^parent}}intro_scm{{/parent}}/classic.scm") (car (command-line)))
+					)
+				(sagittarius
+					(looking-at (regex "{{parent}}{{^parent}}intro_scm{{/parent}}/classic.scm") (car (command-line)))
+					)
+				(else #f))
+			(lib_main (command-line))
+			0)
+		)
+	)
+
+;; to generate stub files for <packagename> classic_stubs <modulename> {{parent}}{{^parent}}intro_scm{{/parent}}.classic
+; cd <path> ; sagittarius-package generate-full classic_stubs

@@ -1,0 +1,53 @@
+PREFIX = ENV['prefix'] ? ENV['prefix'] : '/usr/local'
+DEBUG = ENV['DEBUG'] ? ENV['DEBUG'] : '0'
+
+RAKE = ENV['RAKE'] ? ENV['RAKE'] : 'rake'
+# Single package rakefile script.
+
+# SCHEME=[gosh -r7 | sash -d -r7]
+SCHEME = ENV['SCHEME'] ? ENV['SCHEME'] : 'gosh -r7'
+sitelibdir = "${PREFIX}/share/scheme-r7rs/sitelib"
+
+class SharedVars
+  attr_accessor :parent, :proj, :version, :cppflags, :ldflags, :cflags, :ldlibs
+  
+  def initialize
+    @parent, @proj, @version = 'new_parent', 'new_parent-new_pkg', '0.0.0'
+  end
+end
+
+VARS = SharedVars.new
+VARS.parent, pkg = '{{parent}}{{^parent}}intro_scm{{/parent}}', '{{project}}{{^project}}util{{/project}}'
+VARS.proj, VARS.version = "#{VARS.parent}.#{pkg}", '{{version}}{{^version}}0.1.0{{/version}}'
+namespace_path = VARS.parent.gsub(/\./, '/')
+
+desc "Default target: #{RAKE} help"
+task :default => [:help]
+
+PKG_CONFIG = "pkg-config --with-path=#{PREFIX}/lib/pkgconfig"
+
+file 'build/.depend' do |t|
+  "bin lib/pkgconfig share/doc/#{VARS.proj}".split().each { |i|
+    mkdir_p('build/' + i) || true }
+  dirs_found = `find #{VARS.parent} tests -type d`
+  dirs_found.split("\n").each { |i| mkdir_p('build/' + i) || true }
+  cp_r(['resources'], 'build') || true
+  rm_rf(t.name) || true ; touch(t.name) || true
+end
+
+desc 'Compile target(s)'
+#task :all => ['build/.depend', :auxffi]
+task :all => ['build/.depend']
+
+{{#executable}}
+
+desc 'Run main: rake run\[arg1,arg2\]'
+task :run, [:arg1] => "#{VARS.parent}/main.scm" do |t, args|
+#	export [DY]LD_LIBRARY_PATH=. # ([da|ba|z]sh Linux)
+#	setenv [DY]LD_LIBRARY_PATH . # (tcsh FreeBSD)
+  cd('build') { sh "LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}:lib ${SCHEME} -A${sitelibdir} -A.. ../#{t.source} #{args[:arg1]} #{args.extras.join(' ')} || true" }
+end
+{{/executable}}
+
+require "./rakefile-targets.rb"
+#require "./rakefile-auxffi.rb"

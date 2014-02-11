@@ -1,0 +1,54 @@
+# {{parentcap}}{{^parentcap}}Intro_scm{{/parentcap}}{{joiner}}{{^joiner}}.{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}
+<!-- .md to .html: markdown foo.md > foo.html
+                   pandoc -s -f markdown_strict -t html5 -o foo.html foo.md -->
+
+{{description}}{{^description}}Utilities sub-package for Scheme Intro examples project.{{/description}}
+
+## Installation
+source code tarball download:
+    
+        # [aria2c --check-certificate=false | wget --no-check-certificate | curl -kOL]
+        FETCHCMD='aria2c --check-certificate=false'
+        $FETCHCMD https://{{repohost}}{{^repohost}}bitbucket.org{{/repohost}}/{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}/{{parent}}{{^parent}}intro_scm{{/parent}}/[get | archive]/master.zip
+
+version control repository clone:
+        
+        git clone https://{{repohost}}{{^repohost}}bitbucket.org{{/repohost}}/{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}/{{parent}}{{^parent}}intro_scm{{/parent}}.git
+
+build example with rake:
+cd <path>/build ; [sh] ./configure.sh [--prefix=$PREFIX] [--help]
+rake all [test]
+[sudo] rake install
+
+build example with make:
+cd <path>/build ; [sh] ./configure.sh [--prefix=$PREFIX] [--help]
+make all [check]
+[sudo] make install
+
+## Usage
+        // SCHEME='gosh -r7'  // [gosh -r7 | sash -d -r7]
+        
+{{#executable}}
+        [env RSRC_PATH=<path>/resources] $SCHEME -A. {{parent}}{{^parent}}intro_scm{{/parent}}/main.scm
+or
+        [env RSRC_PATH=<path>/resources] sh {{parent}}{{^parent}}intro_scm{{/parent}}/main.scm
+or
+        [env RSRC_PATH=<path>/resources] $SCHEME
+        
+        > (import (prefix ({{parent}}{{^parent}}intro_scm{{/parent}} main) {{projectcap}}{{^projectcap}}Util{{/projectcap}}:))
+
+        > ({{projectcap}}{{^projectcap}}Util{{/projectcap}}:main '())
+{{/executable}}
+{{^executable}}
+        $SCHEME -A. -l {{parent}}{{^parent}}intro_scm{{/parent}}/{{project}}{{^project}}util{{/project}}.scm
+
+        > (import (prefix ({{parent}}{{^parent}}intro_scm{{/parent}} {{project}}{{^project}}util{{/project}}) {{projectcap}}{{^projectcap}}Util{{/projectcap}}:))
+
+        > ({{projectcap}}{{^projectcap}}Util{{/projectcap}}:cartesian_prod '(0, 1, 2) '(10, 20, 30))
+{{/executable}}
+
+## Author/Copyright
+Copyright (c) {{year}}{{^year}}2014{{/year}} by {{author}}{{^author}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}{{/author}} <{{email}}{{^email}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}-codelab@yahoo.com{{/email}}>
+
+## License
+Licensed under the {{license}}{{^license}}Apache-2.0{{/license}} License. See LICENSE for details.

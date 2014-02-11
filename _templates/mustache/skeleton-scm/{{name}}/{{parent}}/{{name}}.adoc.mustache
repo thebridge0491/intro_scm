@@ -1,0 +1,23 @@
+//:leveloffset: +1
+= {{parentcap}}{{^parentcap}}Intro_scm{{/parentcap}}{{joiner}}{{^joiner}}.{{/joiner}}{{projectcap}}{{^projectcap}}Util{{/projectcap}}
+:author: {{author}}{{^author}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}{{/author}}
+:email: <{{email}}{{^email}}{{repoacct}}{{^repoacct}}imcomputer{{/repoacct}}-codelab@yahoo.com{{/email}}>
+:revnumber: {{version}}{{^version}}0.1.0{{/version}}
+:description: API doc for {{name}}{{^name}}intro_scm.util{{/name}}
+:hardbreaks:
+:linkcss:
+//:stylesheet!:
+
+[source,scheme,indent=4]
+----
+include::{{project}}{{^project}}util{{/project}}.scm[tags=*]
+
+include::_{{project}}{{^project}}util{{/project}}.scm[tags=*]
+{{#executable}}
+include::person.scm[tags=*]
+
+include::main.scm[tags=*]
+
+include::_main.scm[tags=*]
+{{/executable}}
+----

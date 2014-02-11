@@ -1,0 +1,21 @@
+//:leveloffset: +1
+= Intro_scm.Intro
+:author: thebridge0491
+:email: <thebridge0491-codelab@yahoo.com>
+:revnumber: 0.1.0
+:description: API doc for intro_scm.intro
+:hardbreaks:
+:linkcss:
+//:stylesheet!:
+
+[source,scheme,indent=4]
+----
+include::intro.scm[tags=*]
+
+include::_intro.scm[tags=*]
+include::person.scm[tags=*]
+
+include::main.scm[tags=*]
+
+include::_main.scm[tags=*]
+----

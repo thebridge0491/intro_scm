@@ -1,0 +1,38 @@
+(define (setUpClass) 
+    (display (format "~a~%" "SetUpClass ...")))
+
+(define (tearDownClass) 
+    (display (format "~a~%" "... TearDownClass")))
+
+(define (setUp) 
+    (display (format "~a~%" "SetUp ...")))
+
+(define (tearDown) 
+    (display (format "~a~%" "... TearDown")))
+
+(define epsilon 0.001)
+
+(define (wrap_test start end test_fun)
+    (start)
+    (test_fun)
+    (end))            
+
+(define (suite)
+    ;(test-begin (symbol->string (module-name (current-module))))
+    (test-begin (symbol->string mod-sym))
+    
+    (wrap_test setUp tearDown (lambda ()
+		(test-equal * (* 2 2) 4)
+		(test-approximate = 4.0 4.0 epsilon)
+		(test-equal = "Hello" "Hello")
+		(test-equal > (> 4 5) #t)
+		(test-equal {{projectcap}}{{^projectcap}}Util{{/projectcap}}:echo_invoke ({{projectcap}}{{^projectcap}}Util{{/projectcap}}:echo_invoke format "") 
+			"(#<closure format>): \n")
+        (do-ec (: i 5) (: j 4) (: k 3) (test-equal = (+ (* i j) (* i k))
+            (* i (+ j k))))
+        ))
+    
+    
+    (test-end)
+    )
+
