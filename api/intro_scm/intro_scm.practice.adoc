@@ -1,0 +1,21 @@
+//:leveloffset: +1
+= Intro_scm.Practice
+:author: thebridge0491
+:email: <thebridge0491-codelab@yahoo.com>
+:revnumber: 0.1.0
+:description: API doc for intro_scm.practice
+:hardbreaks:
+:linkcss:
+//:stylesheet!:
+
+[source,scheme,indent=4]
+----
+include::practice/classic.scm[tags=*]
+
+include::practice/_classic.scm[tags=*]
+
+include::practice/sequenceops.scm[tags=*]
+
+include::practice/_sequenceops.scm[tags=*]
+
+----

@@ -14,7 +14,7 @@ PKG_CONFIG = pkg-config --with-path=$(PREFIX)/lib/pkgconfig
 SCHEME = gosh -r7
 sitelibdir = $(PREFIX)/share/scheme-r7rs/sitelib
 
-pkg = util
+pkg = foreignc
 parent = intro_scm
 proj = $(parent)-$(pkg)
 namespace_path = $(shell echo $(parent) | sed 'y|.|/|')
@@ -29,8 +29,8 @@ build/.depend:
 
 .PHONY: all
 
-#all: build/.depend auxffi ## compile
-all: build/.depend ## compile
+all: build/.depend auxffi ## compile
+#all: build/.depend ## compile
 
 -include build/.depend Makefile-targets.mk
-#-include Makefile-auxffi.mk
+-include Makefile-auxffi.mk

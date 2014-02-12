@@ -14,7 +14,7 @@ PKG_CONFIG = pkg-config --with-path=$(PREFIX)/lib/pkgconfig
 SCHEME = gosh -r7
 sitelibdir = $(PREFIX)/share/scheme-r7rs/sitelib
 
-pkg = util
+pkg = practice
 parent = intro_scm
 proj = $(parent)-$(pkg)
 namespace_path = $(shell echo $(parent) | sed 'y|.|/|')

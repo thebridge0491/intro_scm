@@ -16,26 +16,34 @@
 ; end::apidocs[]
 
 (import (scheme base) (scheme load) (scheme process-context) (scheme write)
-    (scheme file))
+    (scheme file) (scheme time))
 
 (cond-expand
-    (gauche (import (gauche base) (gauche logger) (rfc json))) ; (gauche threads)
-    (sagittarius
-	(import (sagittarius regex) (util logging) (text json)))
-    (else))
+	(gauche
+		(import (gauche base) (only (gauche base) make string->regexp rxmatch slot-ref 
+			slot-set! class-slots class-of) (gauche logger) (rfc json)))
+	(sagittarius
+		(import (sagittarius regex) (util logging) (text json) (clos user)
+			(only (clos core) class-slots class-of)))
+	(else))
 
 ;(add-load-path "." :relative)
 
-(import (srfi 8) (srfi 37))
+(import (srfi 1) (srfi 8) (srfi 37) (srfi 19) (srfi 27) (srfi 43) (srfi 18))
 (cond-expand
 	((library (srfi 29)) (import (srfi 29)))
 	(gauche (import (only (gauche base) format)))
 	(sagittarius (import (only (sagittarius) format)))
 	(else))
+(cond-expand
+	((library (srfi 95)) (import (srfi 95)))
+	(else))
 
-;(load "./intro_scm/intro.scm")
-(import (prefix (intro_scm intro) Intro:)
+;(load "./intro_scm/util.scm")
+(import (prefix (intro_scm util) Util:) (prefix (intro_scm intro) Intro:)
     (prefix (intro_scm person) Person:)
+    (prefix (intro_scm practice classic) Classic:)
+    (prefix (intro_scm practice sequenceops) Seqops:)
     )
 
 (define *argv* (cdr (command-line)))
@@ -77,7 +85,7 @@
 ;;; Parse command-line options
 (define (parse_cmdopts argv)
 ; end::apidocs[]
-    (Intro:log_drains parse_cmdopts "entering" (list log_root))
+    (Util:log_drains parse_cmdopts "entering" (list log_root))
     
     (_parse_cmdopts_srfi37 argv))
 
@@ -103,17 +111,17 @@
 				(tup-vec (vector (cons alst-cfg
 					(cons (cdr (assoc "domain" alst-cfg)) (cdr (assoc
 						"name" (cdr (assoc "user1" alst-cfg)))))))))
-			(vector-for-each (lambda (tup3)
+			(vector-for-each (lambda (i tup3)
 				(begin
 					(display (format "config: ~a~%" (car tup3)))
 					(display (format "domain: ~a~%" (cadr tup3)))
 					(display (format "user1Name: ~a~%" (cddr tup3)))
 					)) tup-vec)
 			
-			(receive (user)
+			(receive (user num is_expt2)
 				(parse_cmdopts argv)
 				
-				(run_intro user))
+				(run_intro user (or (string->number num) 5) is_expt2 rsrc_path))
 			(close-port port-in))))
 
 ;; guard against main function execution within library

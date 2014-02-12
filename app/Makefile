@@ -1,6 +1,6 @@
 .POSIX:
 .SUFFIXES:
-PREFIX = /usr/local
+PREFIX ?= /usr/local
 
 DEBUG = 0
 

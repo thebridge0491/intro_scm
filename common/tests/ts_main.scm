@@ -22,7 +22,6 @@
 	(else))
 
 (import (prefix (tc_new) Tc_New:))
-;(import (prefix (tc_new) Tc_New:) (prefix (tc_classic) Tc_Classic:))
 
 (check-set-mode! 'report-failed) ; 'off, 'summary, 'report-failed, 'report
 
@@ -32,7 +31,6 @@
             ;(check-report)
             ;(check-reset!)
             (display (format "~a~%" (make-string 40 #\#))))
-        ;(list Tc_New:suite Tc_Classic:suite)
         (list Tc_New:suite)))
 
 ;(if (string=? "tests/ts_main.scm" (car (command-line)))

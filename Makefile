@@ -8,7 +8,7 @@ help:
 SCHEME = gosh -r7
 
 parent = intro_scm
-SUBDIRS = common app
+SUBDIRS = common foreignc api app
 
 .PHONY: all help clean check uninstall install
 help: $(SUBDIRS)

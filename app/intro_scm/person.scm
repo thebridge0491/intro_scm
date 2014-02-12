@@ -28,7 +28,7 @@
 		(sagittarius (import (only (sagittarius) format)))
 		(else))
 	
-	(import (prefix (intro_scm intro) Intro:))
+	(import (prefix (intro_scm util) Util:))
 	
 	(begin
 		(define mod-sym 'intro_scm.person)

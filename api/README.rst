@@ -1,9 +1,9 @@
-Intro_scm.Intro
+Intro_scm.Practice
 ===========================================
 .. .rst to .html: rst2html5 foo.rst > foo.html
 ..                pandoc -s -f rst -t html5 -o foo.html foo.rst
 
-Main app sub-package for Scheme Intro examples project.
+Practice sub-package for Scheme Intro examples project.
 
 Installation
 ------------
@@ -37,17 +37,11 @@ Usage
 -----
         // SCHEME='gosh -r7'  // [gosh -r7 | sash -d -r7]
         
-        [env RSRC_PATH=<path>/resources] $SCHEME -A. intro_scm/main.scm [-h]
+        $SCHEME -A. -l intro_scm/practice.scm
 
-or
-        [env RSRC_PATH=<path>/resources] sh intro_scm/main.scm [-h]
+        > (import (prefix (intro_scm practice classic) Classic:))
 
-or
-        [env RSRC_PATH=<path>/resources] $SCHEME
-
-        > (import (prefix (intro_scm main) Intro:))
-
-        > (Intro:main '())
+        > (Classic:fact_i 5)
 
 Author/Copyright
 ----------------

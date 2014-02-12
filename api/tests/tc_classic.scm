@@ -17,7 +17,7 @@
 		(sagittarius (import (only (sagittarius) format)))
 		(else))
     
-    (import (intro_scm classic))
+    (import (prefix (intro_scm util) Util:) (intro_scm practice classic))
     
     (begin
 		(define mod-sym 'tc_classic)
