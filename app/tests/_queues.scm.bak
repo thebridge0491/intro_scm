@@ -1,0 +1,131 @@
+;(include "/usr[/local]/share/slib/queue.scm")
+;(include "/usr[/local]/share/slib/priorque.scm")
+
+(define (queue-cdr deque1)
+    (let ((deque2 (make-queue)) (res (make-queue)))
+        (let iter ()
+            (if (queue-empty? deque1)
+                '()
+                (begin 
+                    (enqueue! deque2 (queue-front deque1))
+                    (enqueue! res (dequeue! deque1))
+                    (iter))))
+        (let iter ()
+            (if (queue-empty? deque2)
+                '()
+                (begin 
+                    (enqueue! deque1 (dequeue! deque2))
+                    (iter))))
+        (dequeue! res)
+        res))
+
+(define (queue-map proc deque1)
+    (if (queue-empty? deque1)
+        '()
+        (cons (proc (queue-front deque1)) (queue-map proc (queue-cdr deque1)))))
+
+(define (queue-for-each proc deque1)
+    (if (queue-empty? deque1)
+        '()
+        (begin
+            (proc (queue-front deque1))
+            (queue-for-each proc (queue-cdr deque1)))))
+
+(define (queue-fold proc init deque1)
+    (if (queue-empty? deque1)
+        init
+        (queue-fold proc (proc init (queue-front deque1)) (queue-cdr deque1))))
+
+
+(define (heap-car heap1)
+    (let ((deque2 (make-queue)) (res (make-queue)))
+        (let iter ((start (heap-length heap1)))
+            (if (= start 0)
+                '()
+                (begin 
+                    (enqueue! deque2 (heap-extract-max! heap1))
+                    (enqueue! res (queue-rear deque2))
+                    (iter (- start 1)))))
+        (let iter ()
+            (if (queue-empty? deque2)
+                '()
+                (begin 
+                    (heap-insert! heap1 (dequeue! deque2))
+                    (iter))))
+        (dequeue! res)))
+
+(define (heap-cdr heap1)
+    (let ((deque2 (make-queue)) (res (make-heap (heap:heap<? heap1))))
+        (let iter ((start (heap-length heap1)))
+            (if (= start 0)
+                '()
+                (begin 
+                    (enqueue! deque2 (heap-extract-max! heap1))
+                    (heap-insert! res (queue-rear deque2))
+                    (iter (- start 1)))))
+        (let iter ()
+            (if (queue-empty? deque2)
+                '()
+                (begin 
+                    (heap-insert! heap1 (dequeue! deque2))
+                    (iter))))
+        (heap-extract-max! res)
+        res))
+
+(define (heap-map proc heap1)
+    (if (= 0 (heap-length heap1))
+        '()
+        (cons (proc (heap-car heap1)) (heap-map proc (heap-cdr heap1)))))
+
+(define (heap-for-each proc heap1)
+    (if (= 0 (heap-length heap1))
+        '()
+        (begin
+            (proc (heap-car heap1))
+            (heap-for-each proc (heap-cdr heap1)))))
+
+(define (heap-fold proc init heap1)
+    (if (= 0 (heap-length heap1))
+        init
+        (heap-fold proc (proc init (heap-car heap1)) (heap-cdr heap1))))
+
+
+(define (mkstring_queues deque_heap start sep end)
+    (string-append
+        (if (queue? deque_heap)
+            (queue-fold (lambda (el acc) (format #f "~a ~a" acc el)) start 
+                deque_heap)
+            (heap-fold (lambda (el acc) 
+                (format #f "~a ~a" acc el)) start deque_heap))
+        end))
+
+(define (demo_queues)
+    (let ((float_base (list 25.7 0.1 78.5 52.3)) (float_deque (make-queue))
+            (float_minheap (make-heap >)) (float_maxheap (make-heap <))
+            )
+        
+        (for-each (lambda (el) 
+            (enqueue! float_deque el)
+            (heap-insert! float_minheap el)
+            (heap-insert! float_maxheap el)
+            )
+            float_base)
+        
+        (append
+            (list (format #f "~a: ~a~%    ~a~%" "float_deque" float_deque
+                (mkstring_queues float_deque "" " " "")))
+            (list (format #f "~a: ~a~%" "float_deque.fold(+)" 
+                (queue-fold + 0 float_deque)))
+            
+            (list (format #f "~a: ~a~%    ~a~%" "float_maxheap" float_maxheap
+                (mkstring_queues float_maxheap "" " " "")))
+            (list (format #f "~a: ~a~%" "float_maxheap.fold(+)" 
+                (heap-fold + 0 float_maxheap)))
+            (list (format #f "~a: ~a~%    ~a~%" "float_minheap" float_minheap
+                (mkstring_queues float_minheap "" " " "")))
+            (list (format #f "~a: ~a~%" "float_minheap.fold(+)" 
+                (heap-fold + 0 float_minheap)))
+            
+            (list (format #f "~a~%" (make-string 40 #\#)))
+        )))
+

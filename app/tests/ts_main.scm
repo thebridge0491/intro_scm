@@ -21,7 +21,7 @@
 	(sagittarius (import (only (sagittarius) format)))
 	(else))
 
-(import (prefix (tc_new) Tc_New:))
+(import (prefix (tc_collections) Tc_Collections:))
 
 (check-set-mode! 'report-failed) ; 'off, 'summary, 'report-failed, 'report
 
@@ -31,7 +31,7 @@
             ;(check-report)
             ;(check-reset!)
             (display (format "~a~%" (make-string 40 #\#))))
-        (list Tc_New:suite)))
+                (list Tc_Collections:suite)))
 
 ;(if (string=? "tests/ts_main.scm" (car (command-line)))
 (if
