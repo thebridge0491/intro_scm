@@ -10,13 +10,16 @@
 		(else))
     |#
     
-    (import (srfi 1) (srfi 42) (srfi 78))
+    (import (srfi 1) (srfi 8) (srfi 42) (srfi 78))
 	(cond-expand
 		((library (srfi 29)) (import (srfi 29)))
 		(gauche (import (only (gauche base) format)))
 		(sagittarius (import (only (sagittarius) format)))
 		(else))
-    
+    (cond-expand
+		((library (srfi 95)) (import (srfi 95)))
+		(else))
+	
     (import (prefix (intro_scm util) Util:) (intro_scm practice sequenceops))
     
     (begin
