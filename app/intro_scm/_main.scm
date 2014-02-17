@@ -106,7 +106,26 @@
 		)
 		
 	(display (format "~a~%" (make-string 40 #\#)))
+	(display (Util:echo_invoke Classic:pascaltri_add 5))
+	(display (format "~a" (Util:mkstring_nested "\n" " " "\n"
+		(Classic:pascaltri_add 5))))
 	
+	(display (format "~a~%" (make-string 40 #\#)))
+	(display (Util:echo_invoke Classic:hanoi 1 2 3 4))
+	(receive (res stat_txt moves)
+		(Classic:hanoi_moves 1 2 3 4)
+		(display (format "~a" (Util:mkstring_nested "\n" " " "\n" moves))))
+	
+	(display (format "~a~%" (make-string 40 #\#)))
+	(let* ((answer (Classic:nqueens 8))
+			(queens_ndx (random-integer (length answer))))
+		(display (Util:echo_invoke Classic:nqueens_grid 8
+			(list-ref answer queens_ndx)))
+		(display (format "~a" (Util:mkstring_nested "\n" "-" "\n"
+			(Classic:nqueens_grid 8 (list-ref answer queens_ndx))))))
+	
+		
+	(display (format "~a~%" (make-string 40 #\#)))
 	(display (Util:echo_invoke class-slots Person:<person>))
 	(display (Util:echo_invoke slot-ref person1 'age))
 	(display (Util:echo_invoke slot-set! person1 'age 33))
