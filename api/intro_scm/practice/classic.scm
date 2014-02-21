@@ -17,16 +17,26 @@
         range_r range_do compose_i compose_r compose_do
         
         hanoi hanoi_moves nqueens nqueens_grid
+
+        square_f expt_f sum_to_f fact_f fib_f pascaltri_f gcd_f lcm_f
+        base_expand_f base_to10_f range_step_f range_f compose_f
+
+        square_u expt_u sum_to_u fact_u fib_u pascaltri_u gcd_u lcm_u
+        base_expand_u base_to10_u range_step_u range_u compose_u
+
+        square_lc expt_lc sum_to_lc fact_lc fib_lc pascaltri_lc gcd_lc lcm_lc
+        base_expand_lc base_to10_lc range_step_lc range_lc compose_lc
         )
 	
-	(import (scheme base) (scheme process-context) (scheme write))
+	(import (scheme base) (scheme process-context) (scheme write) 
+		(scheme inexact))
 	
 	(cond-expand
 		(gauche (import (gauche base) (gauche logger)))
 		(sagittarius (import (sagittarius regex) (util logging)))
 		(else))
 	
-	(import (srfi 1) (srfi 8) (srfi 26) (srfi 25))
+	(import (srfi 1) (srfi 8) (srfi 26) (srfi 25) (srfi 42))
 	(cond-expand
 		((library (srfi 29)) (import (srfi 29)))
 		(gauche (import (only (gauche base) format)))
@@ -63,6 +73,7 @@
 			
 		(include "_classic.scm")
 		(include "_classic_puzzles.scm")
+		(include "_classic_hiorder.scm")
 		
 		; tag::apidocs[]
 		;;; Main function for library example(s)
