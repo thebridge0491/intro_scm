@@ -257,6 +257,82 @@
             (list concat_i concat_r concat_do concat_a concat_f concat_u
                 concat_lc)))
         )
+
+    
+    (wrap_test setUp tearDown (lambda () (let (
+            (pred_any2 (lambda (e1 e2) (or (null? e1) (null? e2))))
+            (pred_any3 (lambda (e1 e2 e3) (or (null? e1) (null? e2) 
+                (null? e3))))
+            (pred_all2 (lambda (e1 e2) (and (pair? e1) (pair? e2))))
+            (pred_all3 (lambda (e1 e2 e3) (and (pair? e1) (pair? e2) 
+                (pair? e3)))))
+        (for-each (lambda (fn_tup)
+            (let ((fn_any (car fn_tup)) (fn_every (cdr fn_tup)))
+                (check (fn_any pred_any2 '(1 2) '(5 ())) =>
+                    (any pred_any2 '(1 2) '(5 ())))
+                (check (fn_any pred_any3 '(1 2) '(3 4) '(5 ())) => 
+                    (any pred_any3 '(1 2) '(3 4) '(5 ())))
+                (check (fn_every pred_all2 '((1)) '((3 4))) => 
+                    (every pred_all2 '((1)) '((3 4))))
+                (check (fn_every pred_all3 '((1)) '((2)) '((3 4))) =>
+                    (every pred_all3 '((1)) '((2)) '((3 4)))))
+            ) (list (cons any_iv every_iv) (cons any_rv every_rv)
+                (cons any_dov every_dov) (cons any_fv every_fv)
+                (cons any_uv every_uv) (cons any_lcv every_lcv))))))
+    
+    (wrap_test setUp tearDown (lambda () (let (
+            (proc2 (lambda (e1 e2) (list (+ e1 2) (+ e2 2))))
+            (proc3 (lambda (e1 e2 e3) (list (+ e1 2) (+ e2 2) (+ e3 2)))))
+        (for-each (lambda (fn1)
+            (check (fn1 proc2 '(0 1) '(2 3)) => (map proc2 '(0 1) '(2 3)))
+            (check (fn1 proc3 '(0 1) '(2 3) '(4 5)) => 
+                (map proc3 '(0 1) '(2 3) '(4 5)))
+        ) (list map_iv map_rv map_dov map_fv map_uv map_lcv)))))
+    #|
+    (wrap_test setUp tearDown (lambda () (let (
+            (proc2 (lambda (el1 el2) (display (format "~a ~a" el1 el2))))
+            (proc3 (lambda (el1 el2 el3) (display (format "~a ~a ~a" el1 el2 el3)))))
+        (for-each (lambda (fn1)
+            (check (fn1 proc2 '(0 1) '(2 3)) =>
+                (for-each proc2 '(0 1) '(2 3)))
+            (check (fn1 proc3 '(0 1) '(2 3) '(4 5)) =>
+                (for-each proc3 '(0 1) '(2 3) '(4 5)))
+        ) (list for-each_iv for-each_rv for-each_dov for-each_fv
+            for-each_uv for-each_lcv)))))
+    |#
+    (wrap_test setUp tearDown (lambda () (let (
+            (corp2 (lambda (e1 e2 acc) (+ acc e1 e2)))
+            (corp3 (lambda (e1 e2 e3 acc) (- acc e1 e2 e3))))
+        (for-each (lambda (fn1)
+            (check (fn1 corp2 0 '(0 1 2) '(2 3)) => 
+                (fold corp2 0 '(0 1 2) '(2 3)))
+            (check (fn1 corp3 0 '(0 1 2) '(2 3) '(3 4)) => 
+                (fold corp3 0 '(0 1 2) '(2 3) '(3 4)))
+        ) (list fold-left_iv fold-left_rv fold-left_dov)))))
+    
+    (wrap_test setUp tearDown (lambda () (let (
+            (proc2 (lambda (e1 e2 acc) (+ (+ e1 e2) acc)))
+            (proc3 (lambda (e1 e2 e3 acc) (- (+ e1 e2 e3) acc))))
+        (for-each (lambda (fn1)
+            (check (fn1 proc2 0 '(0 1 2) '(2 3)) => 
+                (fold-right proc2 0 '(0 1 2) '(2 3)))
+            (check (fn1 proc3 0 '(0 1 2) '(2 3) '(3 4)) => 
+                (fold-right proc3 0 '(0 1 2) '(2 3) '(3 4)))
+        ) (list fold-right_iv fold-right_rv fold-right_dov)))))
+    
+    (wrap_test setUp tearDown (lambda () (for-each (lambda (fn1)
+        (check (fn1 '(1) '(2 3) '(4)) => (append '(1) '(2 3) '(4)))
+        (check (fn1 '(1) '(2 3) '(4) '(5 6)) =>
+            (append '(1) '(2 3) '(4) '(5 6)))
+        ) (list append_iv append_rv append_dov append_fv append_uv
+            append_lcv))))
+    
+    (wrap_test setUp tearDown (lambda () (for-each (lambda (fn1)
+        (check (fn1 '(0 1 2) '(20 30) '(#\a #\b)) => 
+            (zip '(0 1 2) '(20 30) '(#\a #\b)))
+        (check (fn1 '(0 1 2) '(20 30) '(#\a #\b) '("Z" "Y")) => 
+            (zip '(0 1 2) '(20 30) '(#\a #\b) '("Z" "Y")))
+        ) (list zip_iv zip_rv zip_dov zip_fv zip_uv zip_lcv))))
     
         
     (check-report)

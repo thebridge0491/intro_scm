@@ -26,6 +26,14 @@
 
         square_lc expt_lc sum_to_lc fact_lc fib_lc pascaltri_lc gcd_lc lcm_lc
         base_expand_lc base_to10_lc range_step_lc range_lc compose_lc
+
+        squares_strm expts_strm 
+        
+        squares_map2 expts_map2 sums_map2 facts_map2 fibs_map2 pascalrows_map2
+        squares_su expts_su sums_su facts_su fibs_su pascalrows_su
+        
+        squares_g expts_g sums_g facts_g fibs_g pascalrows_g
+        squares_gu expts_gu sums_gu facts_gu fibs_gu pascalrows_gu
         )
 	
 	(import (scheme base) (scheme process-context) (scheme write) 
@@ -44,6 +52,14 @@
 		(else))
 	(cond-expand
 		((library (srfi 95)) (import (srfi 95)))
+		(else))
+	(cond-expand
+		((library (srfi 41)) (import (srfi 41)))
+		(gauche (import (util stream)))
+		(else))
+	(cond-expand
+		(gauche (import (gauche generator)))
+		(sagittarius (import (sagittarius generators)))
 		(else))
 	
 	(import (prefix (intro_scm util) Util:))
@@ -74,6 +90,7 @@
 		(include "_classic.scm")
 		(include "_classic_puzzles.scm")
 		(include "_classic_hiorder.scm")
+		(include "_classic_streams.scm")
 		
 		; tag::apidocs[]
 		;;; Main function for library example(s)

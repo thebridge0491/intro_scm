@@ -48,6 +48,15 @@
         is-ordered_lc?
 
         append_lc interleave_lc map2_lc zip_lc unzip_lc concat_lc
+
+        any_iv any_rv any_dov every_iv every_rv every_dov map_iv map_rv
+        map_dov for-each_iv for-each_rv for-each_dov fold-left_iv
+        fold-left_rv fold-left_dov fold-right_iv fold-right_rv fold-right_dov
+        append_iv append_rv append_dov zip_iv zip_rv zip_dov
+        
+        any_fv every_fv map_fv for-each_fv append_fv zip_fv
+        any_uv every_uv map_uv for-each_uv append_uv zip_uv
+        any_lcv every_lcv map_lcv for-each_lcv append_lcv zip_lcv
         )
 	
 	(import (scheme base) (scheme process-context) (scheme write)
@@ -92,12 +101,13 @@
 			
 		(include "_sequenceops.scm")
 		(include "_sequenceops_hiorder.scm")
+		(include "_sequenceops_variadic.scm")
 		
 		; tag::apidocs[]
 		;;; Main function for library example(s)
 		(define (lib_main argv)
 		; end::apidocs[]
-			(display (format "(reverse '(0 1 2): ~a~%" (reverse_i '(0 1 2))))
+			(display (format "(reverse '(0 1 2)): ~a~%" (reverse_i '(0 1 2))))
 			0)
 		
 		;; guard against main function execution within library
