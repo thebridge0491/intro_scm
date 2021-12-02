@@ -16,12 +16,20 @@
 		(gauche (import (only (gauche base) format)))
 		(sagittarius (import (only (sagittarius) format)))
 		(else))
+    (cond-expand
+		((library (srfi 41)) (import (srfi 41)))
+		(gauche (import (util stream)))
+		(else))
+	(cond-expand
+		(gauche (import (gauche generator)))
+		(sagittarius (import (sagittarius generators)))
+		(else))
     
     (import (prefix (intro_scm util) Util:) (intro_scm practice classic))
     
     (begin
 		(define mod-sym 'tc_classic)
-		
+        
         (include "_tc_classic.scm")
         )
 	)

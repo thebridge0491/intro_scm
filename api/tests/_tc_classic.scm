@@ -27,28 +27,59 @@
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
         (let* ((num (car tup)) (ans (expt num 2)))
             (for-each (lambda (fn1) (check (fn1 num) => ans))
-                (list square_i square_r square_do)))
+                (list square_i square_r square_do square_f square_u
+                    square_lc))
+            (for-each (lambda (fn_strm1)
+                (check (stream-ref (fn_strm1) num) => ans))
+                (list squares_strm squares_map2 squares_su))
+            (for-each (lambda (fn_gen1)
+                (check (list-ref (generator->list (gtake (fn_gen1) (+ num 1))) 
+                    num) => ans))
+                (list squares_g squares_gu)))
         ) (Util:bound_values '(2 . 20)))))
-
+	
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
         (let* ((b (car tup)) (n (cadr tup)) (ans (expt b n)))
             (for-each (lambda (fn1)
                 (check (Util:in_epsilon? (* epsilon ans) (fn1 b n) ans) => #t))
                 (list expt_i expt_r expt_do fast-expt_i fast-expt_r
-                    fast-expt_do)))
+                    fast-expt_do expt_f expt_u expt_lc))
+            (for-each (lambda (fn_strm1)
+                (check (stream-ref (fn_strm1 b) n) => ans))
+                (list expts_strm expts_map2 expts_su))
+            (for-each (lambda (fn_gen1)
+                (check (list-ref (generator->list (gtake (fn_gen1 b) (+ n 1))) 
+                    (exact (truncate n))) => ans))
+                (list expts_g expts_gu)))
         ) (Util:bound_values '(0.0 . 20.0) '(3.0 . 10.0)))))
     
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
         (let* ((hi (car tup)) (lo (cdr tup))
                 (ans (fold + lo (iota (- hi lo) (+ lo 1)))))
             (for-each (lambda (fn1) (check (fn1 hi lo) => ans))
-                (list sum_to_i sum_to_r sum_to_do)))
+                (list sum_to_i sum_to_r sum_to_do sum_to_f sum_to_u
+                    sum_to_lc))
+            (for-each (lambda (fn_strm1)
+                (check (stream-ref (fn_strm1 lo) (- hi lo)) => ans))
+                (list sums_map2 sums_su))
+            (for-each (lambda (fn_gen1)
+                (check (list-ref (generator->list 
+                    (gtake (fn_gen1 lo) (- hi lo -1))) (- hi lo)) => ans))
+                (list sums_g sums_gu))
+                )
         ) (list-ec (: hi '(15 0 150)) (: lo '(-20 0 -10)) (cons hi lo)))))
     
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
         (let* ((num (car tup)) (ans (fold * 1 (iota num 1))))
             (for-each (lambda (fn1) (check (fn1 num) => ans))
-                (list fact_i fact_r fact_do)))
+                (list fact_i fact_r fact_do fact_f fact_u fact_lc))
+            (for-each (lambda (fn_strm1)
+                (check (stream-ref (fn_strm1) num) => ans))
+                (list facts_map2 facts_su))
+            (for-each (lambda (fn_gen1)
+                (check (list-ref (generator->list (gtake (fn_gen1) (+ num 1))) 
+                    num) => ans))
+                (list facts_g facts_gu)))
         ) (Util:bound_values '(0 . 18)))))
     
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
@@ -56,7 +87,13 @@
                 (corp (lambda (e a) (cons (+ (car a) (cdr a)) (car a))))
                 (ans (car (fold corp '(0 . 1) (iota num)))))
             (for-each (lambda (fn1) (check (fn1 num) => ans))
-                (list fib_i fib_r fib_do)))
+                (list fib_i fib_r fib_do fib_f fib_u fib_lc))
+            (for-each (lambda (fn_strm1)
+                (check (stream-ref (fn_strm1) num) => ans))
+                (list fibs_map2 fibs_su))
+            (for-each (lambda (fn_gen1)
+                (check (list-ref (generator->list (gtake (fn_gen1) (+ num 1))) 
+                    num) => ans)) (list fibs_g fibs_gu)))
         ) (Util:bound_values '(0 . 20)))))
     
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
@@ -65,7 +102,21 @@
                     (append (car a) '(0))) a)))
                 (ans (reverse (fold corp '((1)) (iota rows)))))
             (for-each (lambda (fn1) (check (fn1 rows) => ans))
-                (list pascaltri_add pascaltri_mult pascaltri_do)))
+                (list pascaltri_add pascaltri_mult pascaltri_do
+                    pascaltri_f pascaltri_u pascaltri_lc))
+            (for-each (lambda (fn1)
+                (check 
+					(cond-expand
+						((library (srfi 41))
+							(stream->list (stream-take (+ rows 1) (fn1))))
+						(gauche
+							(stream->list (stream-take (fn1) (+ rows 1))))
+						(else '()))
+					=> ans))
+                (list pascalrows_map2 pascalrows_su))
+            (for-each (lambda (fn1)
+                (check (generator->list (gtake (fn1) (+ rows 1))) => ans))
+                (list pascalrows_g pascalrows_gu)))
         ) (Util:bound_values '(0 . 10)))))
     
     (wrap_test setUp tearDown (lambda () (for-each (lambda (tup)
@@ -91,7 +142,8 @@
                     (check (apply fn_g nums) => ans_g)
                     (check (apply fn_l nums) => ans_l)))
                 (list (cons gcd_i lcm_i) (cons gcd_r lcm_r)
-                    (cons gcd_do lcm_do))))
+                    (cons gcd_do lcm_do) (cons gcd_f lcm_f)
+                    (cons gcd_u lcm_u) (cons gcd_lc lcm_lc))))
         ) '((24 16) (24 16 12) (24 16 32)))))
      
     (wrap_test setUp tearDown (lambda () (for-each (lambda (bs_num)
@@ -102,7 +154,8 @@
                     (iota (+ (round (log num base)) 0)))))
             (for-each (lambda (fn1)
                 (check (fn1 base num) => ans))
-                (list base_expand_i base_expand_r base_expand_do)))
+                (list base_expand_i base_expand_r base_expand_do
+                    base_expand_f base_expand_u base_expand_lc)))
         ) '((2 . 11) (4 . 81) (3 . 243) (2 . 16)))))
      
     (wrap_test setUp tearDown (lambda () (for-each (lambda (bs_nums)
@@ -112,7 +165,8 @@
                 (ans (fold corp 0
                     (zip (iota (length nums)) (reverse nums)))))
             (for-each (lambda (fn1) (check (fn1 base nums) => ans))
-                (list base_to10_i base_to10_r base_to10_do)))
+                (list base_to10_i base_to10_r base_to10_do
+                    base_to10_f base_to10_u base_to10_lc)))
         ) '((2 (1 0 1 1)) (4 (1 1 0 1)) (3 (1 0 0 0 0 0)) (2 (1 0 0 0 0))))))
      
     (wrap_test setUp tearDown (lambda () (for-each (lambda (stop_start)
@@ -128,7 +182,10 @@
                     ))
                 (list (cons range_i range_step_i)
                     (cons range_r range_step_r)
-                    (cons range_do range_step_do))))
+                    (cons range_do range_step_do)
+                    (cons range_f range_step_f)
+                    (cons range_u range_step_u)
+                    (cons range_lc range_step_lc))))
         ) '((2 . -1) (11 . -5) (20 . -9)))))
     
     (wrap_test setUp tearDown (lambda ()
@@ -136,7 +193,8 @@
             (check ((fn1 square sqrt) 2) (=> (lambda (a b) (Util:in_epsilon?
                 (* epsilon 2) a b))) 2)
             (check ((fn1 length iota) 5) => 5))
-            (list compose_i compose_r compose_do)))
+            (list compose_i compose_r compose_do compose_f compose_u
+                compose_lc)))
         )
     
     
