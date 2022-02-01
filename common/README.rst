@@ -3,7 +3,7 @@ Intro_scm.Util
 .. .rst to .html: rst2html5 foo.rst > foo.html
 ..                pandoc -s -f rst -t html5 -o foo.html foo.rst
 
-Utilites sub-package for Scheme Intro examples project.
+Utilities sub-package for Scheme Intro examples project.
 
 Installation
 ------------
@@ -20,18 +20,22 @@ version control repository clone:
         git clone https://bitbucket.org/thebridge0491/intro_scm.git
 
 build example with rake:
-cd <path>/build ; [sh] ./configure.sh [--prefix=$PREFIX] [--help]
 
-rake all [test]
+        rake all [test]
 
-[sudo] rake install
+        [sudo] rake install
+
+build example with ninja:
+
+        ninja [test]
+
+        [sudo] ninja install
 
 build example with make:
-cd <path>/build ; [sh] ./configure.sh [--prefix=$PREFIX] [--help]
 
-make all [check]
+        make all [test]
 
-[sudo] make install
+        [sudo] make install
 
 Usage
 -----

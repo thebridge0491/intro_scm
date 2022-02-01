@@ -11,7 +11,7 @@ help:
 PKG_CONFIG = pkg-config --with-path=$(PREFIX)/lib/pkgconfig
 
 # SCHEME=[gosh -r7 | sash -d -r7]
-SCHEME = gosh -r7
+SCHEME ?= gosh -r7
 sitelibdir = $(PREFIX)/share/scheme-r7rs/sitelib
 
 pkg = foreignc
@@ -19,7 +19,6 @@ parent = intro_scm
 proj = $(parent)-$(pkg)
 namespace_path = $(shell echo $(parent) | sed 'y|.|/|')
 version = 0.1.0
-ver_major = $(shell echo $(version) | cut -d'.' -f1)
 
 build/.depend:
 	-@cd build ; mkdir -p bin lib/pkgconfig share/doc/$(proj)

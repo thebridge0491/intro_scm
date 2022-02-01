@@ -28,11 +28,12 @@
         (check 4.0 (=> (lambda (a b) (Util:in_epsilon? (* epsilon a) a b))) 4.0)
         (check "Hello" => "Hello")
         (check (> 4 5) => #t)
-        (check (Util:echo_invoke format "") => "(#<closure format>): \n")
+        (check (Util:echo_invoke format "") =>
+        	"(#<closure (format format-string . objects)> ): \n")
         
-        (check-ec (: i 5) (: j 4) (: k 3) (+ (* i j) (* i k)) (=> =)
+        (check-ec (: i 5) (: j 4) (: k 3) (+ (* i j) (* i k)) =>
             (* i (+ j k)))
-        (do-ec (: i 5) (: j 4) (: k 3) (check (+ (* i j) (* i k)) (=> =)
+        (do-ec (: i 5) (: j 4) (: k 3) (check (+ (* i j) (* i k)) =>
             (* i (+ j k))))
         ))
     

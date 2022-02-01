@@ -51,8 +51,8 @@ void Scm_Init_classic_stubs(void) {
  *   LDFLAGS := $(LDFLAGS) -L `gauche-config --archdirs | sed 's|:| -L|g'`
  *   LDLIBS := $(LDLIBS) `gauche-config -l` -lintro_c-practice
  *   $(CC) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -fPIC -shared classic_stubslib.c 
- *     ../intro_scm/classic_stubs.c -o intro_scm-classic_stubs.so $(LDLIBS)
+ *     ../intro_scm/classic_stubs.c -o classic_stubs.so $(LDLIBS)
  *   OR
  *   gauche-package compile -v --cppflags='-I..' --ldflags="-L."
- *     --libs='-lintro_c-practice' intro_scm-classic_stubs classic_stubslib.c ../intro_scm/classic_stubs.c
+ *     --libs='-lintro_c-practice' classic_stubs classic_stubslib.c ../intro_scm/classic_stubs.c
  */

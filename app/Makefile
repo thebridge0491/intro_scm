@@ -19,7 +19,6 @@ parent = intro_scm
 proj = $(parent)-$(pkg)
 namespace_path = $(shell echo $(parent) | sed 'y|.|/|')
 version = 0.1.0
-ver_major = $(shell echo $(version) | cut -d'.' -f1)
 
 build/.depend:
 	-@cd build ; mkdir -p bin lib/pkgconfig share/doc/$(proj)
@@ -35,7 +34,7 @@ all: build/.depend ## compile
 run: $(parent)/main.scm ## run main [ARGS=""]
 #	export [DY]LD_LIBRARY_PATH=. # ([da|ba|z]sh Linux)
 #	setenv [DY]LD_LIBRARY_PATH . # (tcsh FreeBSD)
-	-cd build ; LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):lib $(SCHEME) -A$(sitelibdir) -A.. ../$(parent)/main.scm $(ARGS)
+	-cd build ; LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):lib $(SCHEME) -A$(sitelibdir) -A. -A.. ../$(parent)/main.scm $(ARGS)
 
 -include build/.depend Makefile-targets.mk
 #-include Makefile-auxffi.mk
