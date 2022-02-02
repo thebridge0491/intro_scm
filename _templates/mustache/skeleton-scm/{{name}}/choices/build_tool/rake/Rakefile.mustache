@@ -6,13 +6,13 @@ RAKE = ENV['RAKE'] ? ENV['RAKE'] : 'rake'
 
 # SCHEME=[gosh -r7 | sash -d -r7]
 SCHEME = ENV['SCHEME'] ? ENV['SCHEME'] : 'gosh -r7'
-sitelibdir = "${PREFIX}/share/scheme-r7rs/sitelib"
+SITELIBDIR = "#{PREFIX}/share/scheme-r7rs/sitelib"
 
 class SharedVars
   attr_accessor :parent, :proj, :version, :cppflags, :ldflags, :cflags, :ldlibs
   
   def initialize
-    @parent, @proj, @version = 'new_parent', 'new_parent-new_pkg', '0.0.0'
+    @parent, @proj, @version = 'new_parent', 'new_parent.new_pkg', '0.0.0'
   end
 end
 
@@ -45,7 +45,7 @@ desc 'Run main: rake run\[arg1,arg2\]'
 task :run, [:arg1] => "#{VARS.parent}/main.scm" do |t, args|
 #	export [DY]LD_LIBRARY_PATH=. # ([da|ba|z]sh Linux)
 #	setenv [DY]LD_LIBRARY_PATH . # (tcsh FreeBSD)
-  cd('build') { sh "LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}:lib ${SCHEME} -A${sitelibdir} -A.. ../#{t.source} #{args[:arg1]} #{args.extras.join(' ')} || true" }
+  cd('build') { sh "env LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}:lib #{SCHEME} -A#{SITELIBDIR} -A. -A.. ../#{t.source} #{args[:arg1]} #{args.extras.join(' ')} || true" }
 end
 {{/executable}}
 

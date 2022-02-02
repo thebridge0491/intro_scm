@@ -1,0 +1,46 @@
+# FFI auxiliary ninja script.
+
+ffi_libdir = $$(${PKG_CONFIG} --variable=libdir intro_c-practice || echo .)
+ffi_incdir = $$(${PKG_CONFIG} --variable=includedir intro_c-practice || echo .)
+LD_LIBRARY_PATH = $${LD_LIBRARY_PATH}:${ffi_libdir}
+
+# so | dylib
+sosuffix = $${sosuffix:-so}
+LDFLAGS = $${LDFLAGS} -Wl,--enable-new-dtags
+
+# Debug mode default flags
+#DEFAULT_CPPFLAGS = -DDEBUG -UNDEBUG $${CPPFLAGS}
+#DEFAULT_CFLAGS = -g3 -O0 --coverage $${CFLAGS}
+#DEFAULT_LDFLAGS = --coverage $${LDFLAGS}
+
+# Release mode default flags
+DEFAULT_CPPFLAGS = -DNDEBUG -UDEBUG $${CPPFLAGS}
+DEFAULT_CFLAGS = -O3 $${CFLAGS}
+DEFAULT_LDFLAGS = $${LDFLAGS}
+
+# clang | gcc
+CC = $${CC:-clang}
+# using gauche-package
+CPPFLAGS = ${DEFAULT_CPPFLAGS} -Iinclude -I${ffi_incdir} -I `gauche-config --incdirs | sed 's|:| -I|g'`
+LDFLAGS = ${DEFAULT_LDFLAGS} -Wl,-rpath,'$$ORIGIN/:${ffi_libdir}' -Lbuild/lib -L `gauche-config --archdirs | sed 's|:| -L|g'`
+CFLAGS = ${DEFAULT_CFLAGS} -Wall -pedantic -std=c99 -m64
+LDLIBS = ${LDLIBS} `gauche-config -l` -L${ffi_libdir} -lintro_c-practice
+# using sagittarius-package
+#CPPFLAGS = ${DEFAULT_CPPFLAGS} -I.. -Iinclude -I${ffi_incdir} `sagittarius-config -I`
+#LDFLAGS = ${DEFAULT_LDFLAGS} -Wl,-rpath,'$$ORIGIN/:${ffi_libdir}' -Lbuild/lib `sagittarius-config -L` `${PKG_CONFIG} --libs bdw-gc`
+#CFLAGS = ${DEFAULT_CFLAGS} -Wall -pedantic -std=c99 -m64 `sagittarius-config --c-flags` `${PKG_CONFIG} --cflags bdw-gc`
+#LDLIBS = ${LDLIBS} `sagittarius-config -l` -L${ffi_libdir} -lintro_c-practice
+
+build auxffi: custom_cmd
+  DESC = Compile FFI extension
+#  # using gauche-package
+#  #$$(cd build ; ${CC} ${CPPFLAGS} ${LDFLAGS} ${CFLAGS} -fPIC -shared classic_stubslib.c ../${parent}/classic_stubs.c -o classic_stubs.${sosuffix} ${LDLIBS}) ; $
+  COMMAND = $
+    $$(cd build ; gauche-package compile -c -n ../${parent}/classic_stubslib.stub) ; $
+    $$(cd build ; gauche-package compile -v --cppflags="-I.. -I${ffi_incdir}" --ldflags="-L${ffi_libdir} -L." --libs="-lintro_c-practice" classic_stubs classic_stubslib.c ../${parent}/classic_stubs.c)
+#  # using sagittarius-package
+#  #COMMAND = $
+#  #  #$$(cd build ; sagittarius-package genstub .. . ${parent}/classic_stubslib.stub) ; $
+#  #  #$$(cd build ; ${CC} ${CPPFLAGS} ${LDFLAGS} ${CFLAGS} -shared ${parent}/classic_stubslib.c ../${parent}/classic_stubs.c -o classic_stubs.${sosuffix} ${LDLIBS})
+  pool = console
+  restat = 1

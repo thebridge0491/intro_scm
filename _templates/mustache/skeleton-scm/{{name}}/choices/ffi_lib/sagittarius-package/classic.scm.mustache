@@ -14,10 +14,10 @@
 	 (import (scheme base) (scheme process-context) (scheme write))
 	
 	(cond-expand
-		(gauche (import (only (gauche base) make string->regexp rxmatch) 
-			(gauche logger)))
-		(sagittarius (import (sagittarius regex) (util logging)
-			(sagittarius ffi)))
+		(gauche (import (only (gauche base) make string->regexp rxmatch 
+			dynamic-load) (gauche logger)))
+		(sagittarius (import (sagittarius regex)
+			(only (sagittarius) load-dynamic-library) (util logging)))
 		(else))
 	
 	(import (srfi 1) (srfi 8))
@@ -31,7 +31,22 @@
 		(define mod-sym '{{parent}}{{^parent}}intro_scm{{/parent}}.classic)
 		
 		;; Loads extension
-		(load-dynamic-library "{{parent}}{{^parent}}intro_scm{{/parent}}-classic_stubs") ; "Sg_Init_classic_stubs")
+		#|
+		(cond-expand
+			(sagittarius.ffi
+				(define so-library
+					(open-shared-library
+						(cond-expand
+							(darwin "libintro_c-practice.dylib")
+							(else "libintro_c-practice.so"))))
+				(define fact_i (c-function so-library unsigned-int 
+					fact_i (unsigned-int)))
+				(define expt_i (c-function so-library float 
+					expt_i (float float)))
+				)
+			)
+		|#
+		(load-dynamic-library "classic_stubs") ; "Sg_Init_classic_stubs")
 		
 		#|
 		(define log_prac

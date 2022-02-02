@@ -4,21 +4,19 @@ help:
 
 #MAKE = make # (GNU make variants: make (Linux) gmake (FreeBSD)
 
-# SCHEME=[gosh -r7 | sash -d -r7]
-SCHEME = gosh -r7
-
 parent = {{parent}}{{^parent}}intro_scm{{/parent}}
+version = {{version}}{{^version}}0.1.0{{/version}}
 SUBDIRS = common app
 
 .PHONY: all help clean test uninstall install
 help: $(SUBDIRS)
-	-for dirX in $^ ; do $(MAKE) -C $$dirX $@ ; done
+	-for dirX in $^ ; do ninja -C $$dirX $@ ; done
 	@echo "##### Top-level multiproject: $(parent) #####"
-	@echo "Usage: $(MAKE) [SUBDIRS="$(SUBDIRS)"] [SCHEME="$(SCHEME)"] [target]"
+	@echo "Usage: $(MAKE) [SUBDIRS="$(SUBDIRS)"] [target]"
 all test uninstall install: $(SUBDIRS)
-	-for dirX in $^ ; do $(MAKE) -C $$dirX $@ ; done
+	-for dirX in $^ ; do ninja -C $$dirX $@ ; done
 clean: $(SUBDIRS)
-	-for dirX in $^ ; do $(MAKE) -C $$dirX $@ ; done
+	-for dirX in $^ ; do ninja -C $$dirX $@ ; done
 	-rm -fr core* *~ .*~ build/* *.log */*.log
 
 #----------------------------------------
@@ -30,8 +28,8 @@ build/$(distdir) :
 #	#-zip -9 -q --exclude @exclude.lst -r - . | unzip -od build/$(distdir) -
 	-tar --format=posix --dereference --exclude-from=exclude.lst -cf - . | tar -xpf - -C build/$(distdir)
 
-.PHONY: dist doc run
-dist | build/$(distdir): $(SUBDIRS)
+.PHONY: package doc run
+package: $(SUBDIRS) | build/$(distdir)
 	-@for fmt in `echo $(FMTS) | tr ',' ' '` ; do \
 		case $$fmt in \
 			7z) echo "### build/$(distdir).7z ###" ; \
@@ -47,8 +45,8 @@ dist | build/$(distdir): $(SUBDIRS)
 		esac \
 	done
 	-@rm -r build/$(distdir)
-	-for dirX in $^ ; do $(MAKE) -C $$dirX $@ ; done
+	-for dirX in $^ ; do ninja -C $$dirX $@ ; done
 doc: $(SUBDIRS)
-	-for dirX in $^ ; do $(MAKE) -C $$dirX $@ ; done
+	-for dirX in $^ ; do ninja -C $$dirX $@ ; done
 run: app
-	-$(MAKE) -C app $@
+	-ninja -C app $@

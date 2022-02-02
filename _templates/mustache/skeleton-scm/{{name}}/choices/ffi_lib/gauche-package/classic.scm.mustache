@@ -14,9 +14,10 @@
 	 (import (scheme base) (scheme process-context) (scheme write))
 	
 	(cond-expand
-		(gauche (import (only (gauche base) make string->regexp rxmatch) 
-			(gauche logger)))
-		(sagittarius (import (sagittarius regex) (util logging)))
+		(gauche (import (only (gauche base) make string->regexp rxmatch 
+			dynamic-load) (gauche logger)))
+		(sagittarius (import (sagittarius regex)
+			(only (sagittarius) load-dynamic-library) (util logging)))
 		(else))
 	
 	(import (srfi 1) (srfi 8))
@@ -30,7 +31,8 @@
 		(define mod-sym '{{parent}}{{^parent}}intro_scm{{/parent}}.classic)
 		
 		;; Loads extension
-		(dynamic-load "{{parent}}{{^parent}}intro_scm{{/parent}}-classic_stubs" :init-function "Scm_Init_classic_stubs")
+		;(dynamic-load "classic_stubs" :init-function "Scm_Init_classic_stubs")
+		(dynamic-load "classic_stubs")
 		
 		#|
 		(define log_prac

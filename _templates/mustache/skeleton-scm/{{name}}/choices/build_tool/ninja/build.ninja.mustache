@@ -1,0 +1,50 @@
+PREFIX = $${PREFIX:-/usr/local}
+
+DEBUG = $${DEBUG:-0}
+
+# Single package build.ninja script.
+ninja_required_version = 1.5
+
+#rootdir = .
+builddir = build
+
+PKG_CONFIG = pkg-config --with-path=${PREFIX}/lib/pkgconfig
+
+# SCHEME=[gosh -r7 | sash -d -r7]
+SCHEME = $${SCHEME:-gosh -r7}
+sitelibdir = ${PREFIX}/share/scheme-r7rs/sitelib
+
+pkg = {{project}}{{^project}}util{{/project}}
+parent = {{parent}}{{^parent}}intro_scm{{/parent}}
+proj = ${parent}.${pkg}
+namespace_path = $$(echo ${parent} | sed 'y|.|/|')
+version = {{version}}{{^version}}0.1.0{{/version}}
+
+# Rule for running custom commands.
+rule custom_cmd
+  description = $DESC
+  command = $COMMAND
+
+include ./build-targets.ninja
+#include ./build-auxffi.ninja
+
+build build/.depend: custom_cmd
+  DESC = Set up buildir & generate .depend file
+  COMMAND = $
+    $$(cd build ; mkdir -p bin lib/pkgconfig share/doc/${proj}) ; $
+    $$(find ${parent} tests -type d -exec mkdir -p build/{} \;) ; $
+    cp -fR resources build ; $
+    echo '' > build/.depend
+
+#build all: phony build/.depend auxffi
+build all: phony build/.depend
+{{#executable}}
+
+build run: custom_cmd || ${parent}/main.scm
+  DESC = Run main [ARGS=$${ARGS:-}]
+  COMMAND = cd build ; env LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:lib ${SCHEME} -A${sitelibdir} -A. -A.. ../${parent}/main.scm $${ARGS:-}
+  pool = console
+  restat = 1
+{{/executable}}
+
+default help

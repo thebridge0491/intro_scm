@@ -1,0 +1,84 @@
+# Targets ninja script.
+
+build help: custom_cmd
+  DESC = Targets available -- ninja -t targets [OPTS=$${OPTS:-}]
+  COMMAND = ninja -t targets $${OPTS:-}
+
+build clean: custom_cmd
+  DESC = Clean build artifacts -- ninja -t clean [OPTS=$${OPTS:-}]
+  COMMAND = ninja -t clean $${OPTS:-}
+
+build test: custom_cmd
+  DESC = Run test [TOPTS=$${TOPTS:-}]
+  COMMAND = cd build ; env LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:lib ${SCHEME} -A${sitelibdir} -A. -A.. -A../tests ../tests/ts_main.scm $${TOPTS:-}
+  pool = console
+  restat = 1
+
+build uninstall: custom_cmd
+  DESC = Uninstall artifacts
+  COMMAND = $
+    rm -ir ${sitelibdir}/*${parent}* || true
+  pool = console
+  restat = 1
+
+build install: custom_cmd
+  DESC = Install artifacts
+  COMMAND = $
+    mkdir -p ${sitelibdir} ; cp -fR ${parent} ${sitelibdir}/ ; $
+    ls ${sitelibdir} | grep ${parent} ; sleep 3 
+  pool = console
+  restat = 1
+
+distdir = ${proj}-${version}
+
+build build/${distdir}: custom_cmd
+  DESC = Set up archive files
+  COMMAND = $
+    mkdir -p build/${distdir} ; cp -f ./exclude.lst build/ ; $
+    tar --format=posix --dereference --exclude-from=exclude.lst -cf - . | tar -xpf - -C build/${distdir}
+
+build package: custom_cmd || build/${distdir}
+  DESC = Archive source code [FMTS=$${FMTS:-tar.gz,zip}]
+  COMMAND = $
+    for fmt in $$(echo $${FMTS:-tar.gz,zip} | tr ',' ' ') ; do $
+      case $$fmt in $
+        7z) echo "### build/${distdir}.7z ###" ; $
+          rm -f build/${distdir}.7z ; $
+          $$(cd build ; 7za a -t7z -mx=9 ${distdir}.7z ${distdir}) ;; $
+        zip) echo "### build/${distdir}.zip ###" ; $
+          rm -f build/${distdir}.zip ; $
+          $$(cd build ; zip -9 -q -r ${distdir}.zip ${distdir}) ;; $
+        *) tarext=$$(echo $$fmt | grep -e '^tar$$' -e '^tar.xz$$' -e '^tar.zst$$' -e '^tar.bz2$$' || echo tar.gz) ; $
+          echo "### build/${distdir}.$$tarext ###" ; $
+          rm -f build/${distdir}.$$tarext ; $
+          $$(cd build ; tar --posix -L -caf ${distdir}.$$tarext ${distdir}) ;; $
+      esac ; $
+    done ; $
+    rm -r build/${distdir}
+  pool = console
+  restat = 1
+
+build doc: custom_cmd
+  DESC = Generate documentation
+  COMMAND = $
+    doxygen ../Doxyfile_*.txt ; rm -fr share/doc/${proj}/html ; $
+    mv -f html share/doc/${proj}/html
+  pool = console
+  restat = 1
+
+#lintopts = --enable=information --report-progress --quiet --force --suppress=missingIncludeSystem --std=c99 --std=posix -Iinclude -I../src
+lintopts = --enable=all --report-progress --quiet --force --std=c99 --std=posix -Iinclude -I../src
+
+build lint: custom_cmd
+  DESC = Lint check
+  COMMAND = cppcheck ${lintopts} ../src
+  pool = console
+  restat = 1
+
+build report: custom_cmd
+  DESC = Report code coverage
+  COMMAND = $
+    lcov --capture -d . -o .coverage --gcov-tool ../llvm-gcov.sh ; $
+    genhtml -o cov .coverage
+  pool = console
+  restat = 1

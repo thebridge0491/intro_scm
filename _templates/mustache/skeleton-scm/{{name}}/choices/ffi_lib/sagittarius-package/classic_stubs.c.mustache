@@ -44,13 +44,13 @@ SG_EXTENSION_ENTRY void CDECL Sg_Init_classic_stubs(void) {
 }
 
 /*
- * To create classic_stubslib.c:
+ * To create {{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubslib.c:
  *   cd build ; sagittarius-package genstub .. . {{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubslib.stub
  * To compile/link dynamic lib:
- *   CPPFLAGS := $(CPPFLAGS) `sagittarius-config -I`
- *   LDFLAGS := $(LDFLAGS) `sagittarius-config -L` `pkg-config --libs bdw-gc`
+ *   CPPFLAGS := $(CPPFLAGS) -I.. `sagittarius-config -I`
+ *   LDFLAGS := $(LDFLAGS) -L. `sagittarius-config -L` `pkg-config --libs bdw-gc`
  *   CFLAGS := $(CFLAGS) `sagittarius-config --c-flags` `pkg-config --cflags bdw-gc`
  *   LDLIBS := $(LDLIBS) `sagittarius-config -l` -lintro_c-practice
- *   $(CC) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -shared classic_stubslib.c 
- *     ../{{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubs.c -o {{parent}}{{^parent}}intro_scm{{/parent}}-classic_stubs.so $(LDLIBS)
+ *   $(CC) $(CPPFLAGS) $(LDFLAGS) $(CFLAGS) -shared {{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubslib.c 
+ *     ../{{parent}}{{^parent}}intro_scm{{/parent}}/classic_stubs.c -o classic_stubs.so $(LDLIBS)
  */

@@ -1,0 +1,33 @@
+parentregex = "^[a-z][._a-z0-9]+$"
+projectregex = "^[a-z][_a-z0-9]+$"
+separator = "."
+joiner = "."
+groupid = false
+category = false
+parent = "intro_scm"
+parentdescription = "Multi-package project Intro examples for Scheme."
+project = "util"
+description = "Utilities sub-package for Scheme Intro examples project."
+version = "0.1.0"
+
+repohost = "bitbucket.org"
+repoacct = "imcomputer"
+date = "2013-10-01"
+
+readmeext = ".rst"
+license = "Apache-2.0"
+buildtool = "make"
+testfrwk = "srfi-78"
+
+ffilib = "none"
+
+skeletondir = "Templates/mustache/skeleton-scm"
+
+[_choices]
+readmeext = [".rst", ".md", ".adoc"]
+license = ["Apache-2.0", "MIT", "BSD-3-Clause", "GPL-3.0+", "ISC", "Unlicense",
+  "Not open source"]
+buildtool = ["make", "ninja", "rake"]
+testfrwk = ["srfi-78", "srfi-64"]
+executable = ["no", "yes"]
+ffilib = ["none", "gauche-package", "sagittarius-package"]
