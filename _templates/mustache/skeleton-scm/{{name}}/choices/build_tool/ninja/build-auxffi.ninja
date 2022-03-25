@@ -23,12 +23,12 @@ CC = $${CC:-clang}
 # using gauche-package
 CPPFLAGS = ${DEFAULT_CPPFLAGS} -Iinclude -I${ffi_incdir} -I `gauche-config --incdirs | sed 's|:| -I|g'`
 LDFLAGS = ${DEFAULT_LDFLAGS} -Wl,-rpath,'$$ORIGIN/:${ffi_libdir}' -Lbuild/lib -L `gauche-config --archdirs | sed 's|:| -L|g'`
-CFLAGS = ${DEFAULT_CFLAGS} -Wall -pedantic -std=c99 -m64
+CFLAGS = ${DEFAULT_CFLAGS} -Wall -pedantic -std=c99
 LDLIBS = ${LDLIBS} `gauche-config -l` -L${ffi_libdir} -lintro_c-practice
 # using sagittarius-package
 #CPPFLAGS = ${DEFAULT_CPPFLAGS} -I.. -Iinclude -I${ffi_incdir} `sagittarius-config -I`
 #LDFLAGS = ${DEFAULT_LDFLAGS} -Wl,-rpath,'$$ORIGIN/:${ffi_libdir}' -Lbuild/lib `sagittarius-config -L` `${PKG_CONFIG} --libs bdw-gc`
-#CFLAGS = ${DEFAULT_CFLAGS} -Wall -pedantic -std=c99 -m64 `sagittarius-config --c-flags` `${PKG_CONFIG} --cflags bdw-gc`
+#CFLAGS = ${DEFAULT_CFLAGS} -Wall -pedantic -std=c99 `sagittarius-config --c-flags` `${PKG_CONFIG} --cflags bdw-gc`
 #LDLIBS = ${LDLIBS} `sagittarius-config -l` -L${ffi_libdir} -lintro_c-practice
 
 build auxffi: custom_cmd

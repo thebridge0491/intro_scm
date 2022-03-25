@@ -24,12 +24,12 @@ end
 
 # using gauche-package
 VARS.cppflags = "#{ENV['CPPFLAGS']} -Iinclude -I#{FFI_INCDIR} -I `gauche-config --incdirs | sed 's|:| -I|g'`"
-VARS.cflags = "#{ENV['CFLAGS']} -Wall -pedantic -std=c99 -m64"
+VARS.cflags = "#{ENV['CFLAGS']} -Wall -pedantic -std=c99"
 VARS.ldflags = "#{ENV['LDFLAGS']} -Wl,-rpath,'$ORIGIN/:#{FFI_LIBDIR}' -Lbuild/lib -L `gauche-config --archdirs | sed 's|:| -L|g'`"
 VARS.ldlibs = "#{ENV['LDLIBS']} `gauche-config -l` -L#{FFI_LIBDIR} -lintro_c-practice"
 # using sagittarius-package
 #VARS.cppflags = "#{ENV['CPPFLAGS']} -I.. -Iinclude -I#{FFI_INCDIR} -I `sagittarius-config -I`"
-#VARS.cflags = "#{ENV['CFLAGS']} -Wall -pedantic -std=c99 -m64 `sagittarius-config --c-flags` `#{PKG_CONFIG} --cflags bdw-gc`"
+#VARS.cflags = "#{ENV['CFLAGS']} -Wall -pedantic -std=c99 `sagittarius-config --c-flags` `#{PKG_CONFIG} --cflags bdw-gc`"
 #VARS.ldflags = "#{ENV['LDFLAGS']} -Wl,-rpath,'$ORIGIN/:#{FFI_LIBDIR}' -Lbuild/lib `sagittarius-config -L` `#{PKG_CONFIG} --libs bdw-gc`"
 #VARS.ldlibs = "#{ENV['LDLIBS']} `sagittarius-config -l` -L#{FFI_LIBDIR} -lintro_c-practice"
 

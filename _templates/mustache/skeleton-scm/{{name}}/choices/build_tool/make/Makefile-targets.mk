@@ -31,10 +31,10 @@ test: tests/ts_main.scm ## run test [TOPTS=""]
 	-cd build ; LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):lib $(SCHEME) -A$(sitelibdir) -A. -A.. -A../tests ../tests/ts_main.scm $(TOPTS)
 uninstall install: ## [un]install artifacts
 	-@if [ "uninstall" = "$@" ] ; then \
-		rm -ir $(sitelibdir)/*$(parent)* ; \
+		ls $(parent) | xargs -I % rm -ir $(sitelibdir)/$(parent)/% ; \
 	else \
 		mkdir -p $(sitelibdir) ; (cp -fR $(parent) $(sitelibdir)/) ; \
-		ls $(sitelibdir) | grep $(parent) ; sleep 3 ; \
+		ls $(sitelibdir)/$(parent)/$(proj).adoc ; sleep 3 ; \
 	fi
 dist: | build/$(distdir) ## [FMTS="tar.gz,zip"] archive source code
 	-@for fmt in `echo $(FMTS) | tr ',' ' '` ; do \
@@ -48,7 +48,7 @@ dist: | build/$(distdir) ## [FMTS="tar.gz,zip"] archive source code
 			*) tarext=`echo $$fmt | grep -e '^tar$$' -e '^tar.xz$$' -e '^tar.zst$$' -e '^tar.bz2$$' || echo tar.gz` ; \
 				echo "### build/$(distdir).$$tarext ###" ; \
 				rm -f build/$(distdir).$$tarext ; \
-				(cd build ; tar --posix -L -caf $(distdir).$$tarext $(distdir)) ;; \
+				(cd build ; tar --posix -h -caf $(distdir).$$tarext $(distdir)) ;; \
 		esac \
 	done
 	-@rm -r build/$(distdir)

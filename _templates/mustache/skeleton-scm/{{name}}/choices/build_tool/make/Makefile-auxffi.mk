@@ -25,12 +25,12 @@ CC = clang		# clang | gcc
 # using gauche-package
 CPPFLAGS := $(CPPFLAGS) -Iinclude -I$(ffi_incdir) -I `gauche-config --incdirs | sed 's|:| -I|g'`
 LDFLAGS := $(LDFLAGS) -Wl,-rpath,'$$ORIGIN/:$(ffi_libdir)' -Lbuild/lib -L `gauche-config --archdirs | sed 's|:| -L|g'`
-CFLAGS := $(CFLAGS) -Wall -pedantic -std=c99 -m64
+CFLAGS := $(CFLAGS) -Wall -pedantic -std=c99
 LDLIBS := $(LDLIBS) `gauche-config -l` -L$(ffi_libdir) -lintro_c-practice
 # using sagittarius-package
 #CPPFLAGS := $(CPPFLAGS) -I.. -Iinclude -I$(ffi_incdir) `sagittarius-config -I`
 #LDFLAGS := $(LDFLAGS) -Wl,-rpath,'$$ORIGIN/:$(ffi_libdir)' -Lbuild/lib `sagittarius-config -L` `$(PKG_CONFIG) --libs bdw-gc`
-#CFLAGS := $(CFLAGS) -Wall -pedantic -std=c99 -m64 `sagittarius-config --c-flags` `$(PKG_CONFIG) --cflags bdw-gc`
+#CFLAGS := $(CFLAGS) -Wall -pedantic -std=c99 `sagittarius-config --c-flags` `$(PKG_CONFIG) --cflags bdw-gc`
 #LDLIBS := $(LDLIBS) `sagittarius-config -l` -L$(ffi_libdir) -lintro_c-practice
 
 auxffi: ## compile FFI extension

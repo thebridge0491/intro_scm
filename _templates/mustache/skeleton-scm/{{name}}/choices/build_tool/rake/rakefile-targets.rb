@@ -22,8 +22,8 @@ end
 #----------------------------------------
 desc 'Uninstall artifacts'
 task :uninstall do
-  installfiles = FileList["#{SITELIBDIR}/*#{VARS.parent}*"]  
-  rm_rf(installfiles) || true
+  filelst = FileList["#{VARS.parent}"]
+  cd(SITELIBDIR) { rm_rf(filelst) || true }
 end
 
 desc 'Install artifacts'
@@ -31,13 +31,13 @@ task :install do
   mkdir_p("#{SITELIBDIR}")
   filelst = FileList["#{VARS.parent}"]
   cp_r(filelst, "#{SITELIBDIR}") || true
-  sh "ls #{SITELIBDIR} | grep #{VARS.parent} ; sleep 3"
+  sh "ls #{SITELIBDIR}/#{VARS.parent}/#{VARS.proj}.adoc ; sleep 3"
 end
 
 file "build/#{VARS.proj}-#{VARS.version}" do |p|
   mkdir_p(p.name)
   # sh "zip -9 -q -x @exclude.lst -r - . | unzip -od #{p.name} -"
-  sh "tar --posix -L -X exclude.lst -cf - . | tar -xpf - -C #{p.name}"
+  sh "tar --posix -h -X exclude.lst -cf - . | tar -xpf - -C #{p.name}"
 end
 if defined? Rake::PackageTask
   Rake::PackageTask.new(VARS.proj, VARS.version) do |p|
@@ -70,7 +70,7 @@ else
         # tarext = `echo #{fmt} | grep -e '^tar$' -e '^tar.xz$' -e '^tar.zst$' -e '^tar.bz2$' || echo tar.gz`.chomp
         tarext = fmt.match(%r{(^tar$|^tar.xz$|^tar.zst$|^tar.bz2$)}) ? fmt : 'tar.gz'
         rm_rf("#{distdir}.#{tarext}") || true
-        sh "tar --posix -L -caf #{distdir}.#{tarext} #{distdir}" || true
+        sh "tar --posix -h -caf #{distdir}.#{tarext} #{distdir}" || true
       end
     }
   end

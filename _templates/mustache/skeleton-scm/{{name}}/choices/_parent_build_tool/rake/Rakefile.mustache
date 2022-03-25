@@ -118,7 +118,7 @@ else
         #tarext = `echo #{fmt} | grep -e '^tar$' -e '^tar.xz$' -e '^tar.zst$' -e '^tar.bz2$' || echo tar.gz`.chomp
         tarext = fmt.match(%r{(^tar$|^tar.xz$|^tar.zst$|^tar.bz2$)}) ? fmt : 'tar.gz'
         rm_rf("build/#{distdir}.#{tarext}") || true
-        cd('build') {sh "tar --posix -L -caf #{distdir}.#{tarext} #{distdir}" || true}
+        cd('build') {sh "tar --posix -h -caf #{distdir}.#{tarext} #{distdir}" || true}
       end
     }
     rm_rf("build/#{distdir}") || true
