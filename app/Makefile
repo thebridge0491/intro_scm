@@ -16,7 +16,7 @@ sitelibdir = $(PREFIX)/share/scheme-r7rs/sitelib
 
 pkg = intro
 parent = intro_scm
-proj = $(parent)-$(pkg)
+proj = $(parent).$(pkg)
 namespace_path = $(shell echo $(parent) | sed 'y|.|/|')
 version = 0.1.0
 
